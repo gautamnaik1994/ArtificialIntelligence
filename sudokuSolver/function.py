@@ -98,25 +98,32 @@ def search(values):
     "Using depth-first search and propagation, create a search tree and solve the sudoku."
     # First, reduce the puzzle using the previous function
     sdict= reduce_puzzle(values)
-
-    lowest_value = []
+    print("=================================================================")
+    print("============================Inside===============================")
+    print("=================================================================")
+    display(sdict)
+    solved_values = [box for box in sdict.keys() if len(values[box]) == 1]
     int_length = 2
-    found_value=''
-    for key,value in sdict.items:
-        if(len(value)==int_length):
-            found_value=value
-            break
-        elif expression:
-            pass
-
-
-    
-    # Choose one of the unfilled squares with the fewest possibilities
-    
-    # Now use recursion to solve each one of the resulting sudokus, and if one returns a value (not False), return that answer!
-
-    # If you're stuck, see the solution.py tab!
-    return values
+    if len(solved_values) == 81 :
+        return values
+    else:
+        found_value=''
+        found_key=''
+        for key,value in sdict.items():
+            if(len(value)==int_length):
+                found_value=value
+                found_key=key
+                break
+        
+        for val in found_value:
+            newSu = sdict.copy()
+            newSu[found_key]=val
+            attempt = search(newSu)
+            if attempt:
+                return attempt
     
 # print(unitlist);
-display(reduce_puzzle(grid_values(grid2)))
+print("=================================================================")
+print("==============================Main===============================")
+print("=================================================================")
+display(search(grid_values(grid2)))
