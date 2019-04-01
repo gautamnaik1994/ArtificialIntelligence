@@ -95,32 +95,22 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
-    "Using depth-first search and propagation, create a search tree and solve the sudoku."
+    "Using depth-first search and propagation, try all possible values."
     # First, reduce the puzzle using the previous function
-    sdict= reduce_puzzle(values)
-    print("=================================================================")
-    print("============================Inside===============================")
-    print("=================================================================")
-    display(sdict)
-    solved_values = [box for box in sdict.keys() if len(values[box]) == 1]
-    int_length = 2
-    if len(solved_values) == 81 :
-        return values
-    else:
-        found_value=''
-        found_key=''
-        for key,value in sdict.items():
-            if(len(value)==int_length):
-                found_value=value
-                found_key=key
-                break
-        
-        for val in found_value:
-            newSu = sdict.copy()
-            newSu[found_key]=val
-            attempt = search(newSu)
-            if attempt:
-                return attempt
+    values = reduce_puzzle(values)
+    if values is False:
+        return False ## Failed earlier
+    if all(len(values[s]) == 1 for s in boxes): 
+        return values ## Solved!
+    # Choose one of the unfilled squares with the fewest possibilities
+    n,s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    # Now use recurrence to solve each one of the resulting sudokus, and 
+    for value in values[s]:
+        new_sudoku = values.copy()
+        new_sudoku[s] = value
+        attempt = search(new_sudoku)
+        if attempt:
+            return attempt
     
 # print(unitlist);
 print("=================================================================")
