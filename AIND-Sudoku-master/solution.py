@@ -16,9 +16,7 @@ for x in range(9):
 
 diagoanal_units = diagonal_1_units + diagonal_2_units
 
-unitlist = unitlist + diagoanal_units
-
-print (diagoanal_units)
+unitlist = unitlist
 
 # Must be called after all units (including diagonals) are added to the unitlist
 units = extract_units(unitlist, boxes)
@@ -52,8 +50,52 @@ def naked_twins(values):
     and because it is simpler (since the reduce_puzzle function already calls this
     strategy repeatedly).
     """
+    # print("===============Start of naked twins===============")
+    row_column_list = row_units + column_units
+    for key,value in values.items():
+        if len(values[key])==2:
+            found_value=values[key]
+            #print("key:" + key  +"  value:" + values[key])
+            e_units = extract_units(row_column_list, [key])
+            # print(e_units)
+            for e_row_item in e_units[key][0]:
+                found_value_list=[]
+                o_found_value_list=[]
+                # print("key:" + e_row_item  +"  value:" + values[e_row_item])
+                if found_value in values[e_row_item] :
+                    o_found_value_list.append(values[e_row_item])
+                    # if len([fv in o_found_value_list if fv==found_value])==2:
+                    tl=0
+                    for fv in o_found_value_list:
+                        if fv == found_value:
+                            tl=tl+1
+                    if tl==2:
+                        values[e_row_item] = values[e_row_item].replace(found_value,'')
+                        found_value_list.append(values[e_row_item])
+            # print("found-val "+found_value)
+            # print(o_found_value_list)
+            # print("----------------")
+            # print(found_value_list)
+            #scan row for twin
+            #scan colums for twin
+            for e_row_item in e_units[key][1]:
+                found_value_list=[]
+                o_found_value_list=[]
+                # print("key:" + e_row_item  +"  value:" + values[e_row_item])
+                if found_value in values[e_row_item] :
+                    o_found_value_list.append(values[e_row_item])
+                    # if len([fv in o_found_value_list if fv==found_value])==2:
+                    tl=0
+                    for fv in o_found_value_list:
+                        if fv == found_value:
+                            tl=tl+1
+                    if tl==2:
+                        values[e_row_item] = values[e_row_item].replace(found_value,'')
+                        found_value_list.append(values[e_row_item])
+
     # TODO: Implement this function!
-    raise NotImplementedError
+    # print("===============End of naked twins===============")
+    return values
 
 
 def eliminate(values):
@@ -129,6 +171,11 @@ def reduce_puzzle(values):
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = eliminate(values)
         values = only_choice(values)
+        print("======before======")
+        display(values)
+        values = naked_twins(values)
+        print("======after======")
+        display(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
@@ -156,6 +203,7 @@ def search(values):
     and extending it to call the naked twins strategy.
     """
     "Using depth-first search and propagation, try all possible values."
+
     # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
     if values is False:
@@ -195,7 +243,7 @@ def solve(grid):
 
 if __name__ == "__main__":
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    display(grid2values(diag_sudoku_grid))
+    # display(grid2values(diag_sudoku_grid))
     result = solve(diag_sudoku_grid)
     display(result)
 
