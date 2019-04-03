@@ -1,18 +1,16 @@
-
 from utils import *
-
 
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
-square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
 unitlist = row_units + column_units + square_units
 
-diagonal_1_units=[]
-diagonal_2_units=[]
+diagonal_1_units = []
+diagonal_2_units = []
 
 for x in range(9):
-   diagonal_1_units.append(rows[x]+cols[x])
-   diagonal_2_units.append(rows[x] + cols[8-x])
+    diagonal_1_units.append(rows[x] + cols[x])
+    diagonal_2_units.append(rows[x] + cols[8 - x])
 
 diagoanal_units = diagonal_1_units + diagonal_2_units
 
@@ -52,45 +50,45 @@ def naked_twins(values):
     """
     # print("===============Start of naked twins===============")
     row_column_list = row_units + column_units
-    for key,value in values.items():
-        if len(values[key])==2:
-            found_value=values[key]
-            #print("key:" + key  +"  value:" + values[key])
+    for key, value in values.items():
+        if len(values[key]) == 2:
+            found_value = values[key]
+            # print("key:" + key  +"  value:" + values[key])
             e_units = extract_units(row_column_list, [key])
             # print(e_units)
+            found_value_list = []
+            o_found_value_list = []
             for e_row_item in e_units[key][0]:
-                found_value_list=[]
-                o_found_value_list=[]
                 # print("key:" + e_row_item  +"  value:" + values[e_row_item])
-                if found_value in values[e_row_item] :
+                if found_value in values[e_row_item]:#check if found value is in units
                     o_found_value_list.append(values[e_row_item])
                     # if len([fv in o_found_value_list if fv==found_value])==2:
-                    tl=0
-                    for fv in o_found_value_list:
-                        if fv == found_value:
-                            tl=tl+1
-                    if tl==2:
-                        values[e_row_item] = values[e_row_item].replace(found_value,'')
-                        found_value_list.append(values[e_row_item])
+                    tl = 0
+            for fv in o_found_value_list:
+                if fv == found_value:
+                    tl = tl + 1
+            if tl == 2:
+                values[e_row_item] = values[e_row_item].replace(found_value, '')
+                found_value_list.append(values[e_row_item])
             # print("found-val "+found_value)
             # print(o_found_value_list)
             # print("----------------")
             # print(found_value_list)
-            #scan row for twin
-            #scan colums for twin
+            # scan row for twin
+            # scan colums for twin
             for e_row_item in e_units[key][1]:
-                found_value_list=[]
-                o_found_value_list=[]
+                found_value_list = []
+                o_found_value_list = []
                 # print("key:" + e_row_item  +"  value:" + values[e_row_item])
-                if found_value in values[e_row_item] :
+                if found_value in values[e_row_item]:
                     o_found_value_list.append(values[e_row_item])
                     # if len([fv in o_found_value_list if fv==found_value])==2:
-                    tl=0
+                    tl = 0
                     for fv in o_found_value_list:
                         if fv == found_value:
-                            tl=tl+1
-                    if tl==2:
-                        values[e_row_item] = values[e_row_item].replace(found_value,'')
+                            tl = tl + 1
+                    if tl == 2:
+                        values[e_row_item] = values[e_row_item].replace(found_value, '')
                         found_value_list.append(values[e_row_item])
 
     # TODO: Implement this function!
@@ -118,9 +116,8 @@ def eliminate(values):
     for box in solved_values:
         digit = values[box]
         for peer in peers[box]:
-            values[peer] = values[peer].replace(digit,'')
+            values[peer] = values[peer].replace(digit, '')
     return values
-
 
 
 def only_choice(values):
@@ -207,11 +204,11 @@ def search(values):
     # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
     if values is False:
-        return False ## Failed earlier
+        return False  ## Failed earlier
     if all(len(values[s]) == 1 for s in boxes):
-        return values ## Solved!
+        return values  ## Solved!
     # Choose one of the unfilled squares with the fewest possibilities
-    n,s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    n, s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
     # Now use recurrence to solve each one of the resulting sudokus, and
     for value in values[s]:
         new_sudoku = values.copy()
@@ -249,6 +246,7 @@ if __name__ == "__main__":
 
     try:
         import PySudoku
+
         PySudoku.play(grid2values(diag_sudoku_grid), result, history)
 
     except SystemExit:
